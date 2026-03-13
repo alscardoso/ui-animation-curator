@@ -34,10 +34,17 @@ export default function App() {
     loadData();
   }, [loadData]);
 
+  // Called by DetailPanel after a save — always updates selectedBookmark
   const handleBookmarkUpdate = (updated) => {
     setBookmarks(prev => prev.map(b => (b.id === updated.id ? updated : b)));
     setSelectedBookmark(updated);
   };
+
+  // Called by BookmarkCard polling — only updates selectedBookmark if it's the same card
+  const handleCardUpdate = useCallback((updated) => {
+    setBookmarks(prev => prev.map(b => (b.id === updated.id ? updated : b)));
+    setSelectedBookmark(prev => prev?.id === updated.id ? updated : prev);
+  }, []);
 
   const handleBookmarkDelete = (id) => {
     setBookmarks(prev => prev.filter(b => b.id !== id));
@@ -110,6 +117,7 @@ export default function App() {
             bookmarks={bookmarks}
             selectedId={selectedBookmark?.id}
             onSelect={handleSelect}
+            onBookmarkUpdate={handleCardUpdate}
           />
         )}
       </main>

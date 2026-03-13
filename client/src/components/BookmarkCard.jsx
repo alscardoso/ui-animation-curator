@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { fetchBookmarkById } from '../api.js';
 
 // Deterministic color per tag name
 const TAG_PALETTES = [
@@ -14,55 +15,109 @@ const TAG_PALETTES = [
 
 function tagColor(tag) {
   let hash = 0;
-  for (let i = 0; i < tag.length; i++) {
-    hash = (hash * 31 + tag.charCodeAt(i)) >>> 0;
-  }
+  for (let i = 0; i < tag.length; i++) hash = (hash * 31 + tag.charCodeAt(i)) >>> 0;
   return TAG_PALETTES[hash % TAG_PALETTES.length];
 }
 
-// X/Twitter logo SVG
-function XIcon({ size = 14 }) {
+function PlayIcon() {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.742l7.733-8.835L1.254 2.25H8.08l4.259 5.63L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z" />
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="5 3 19 12 5 21 5 3" />
     </svg>
   );
 }
 
-export default function BookmarkCard({ bookmark, selected, onClick }) {
+function BrokenLinkIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+      <line x1="2" y1="2" x2="22" y2="22" />
+    </svg>
+  );
+}
+
+export default function BookmarkCard({ bookmark, selected, onClick, onUpdate }) {
   const [hovered, setHovered] = useState(false);
-  const tweetId = bookmark.tweet_id;
+
+  const isPending     = bookmark.type === 'pending';
+  const isUnavailable = !isPending && !bookmark.localPath;
+
+  // Poll every 3s while media is pending
+  useEffect(() => {
+    if (!isPending) return;
+    const interval = setInterval(async () => {
+      try {
+        const updated = await fetchBookmarkById(bookmark.id);
+        if (updated.type !== 'pending') onUpdate?.(updated);
+      } catch {}
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [bookmark.id, isPending, onUpdate]);
+
+  const handleClick = () => {
+    if (isPending) return;                         // no-op while downloading
+    if (isUnavailable) {
+      window.open(bookmark.url, '_blank', 'noopener,noreferrer');
+      return;
+    }
+    onClick?.();
+  };
 
   return (
     <article
-      className={`group relative flex flex-col bg-zinc-900 rounded-xl overflow-hidden cursor-pointer border transition-all duration-150 ${
-        selected
+      className={`group relative flex flex-col bg-zinc-900 rounded-xl overflow-hidden border transition-all duration-150
+        ${isPending ? 'cursor-default' : 'cursor-pointer'}
+        ${selected
           ? 'border-zinc-400 ring-1 ring-zinc-400/20'
           : 'border-zinc-800 hover:border-zinc-700 hover:shadow-lg hover:shadow-black/40'
-      }`}
-      onClick={onClick}
+        }`}
+      onClick={handleClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {/* Thumbnail / hover embed area */}
+      {/* Media area */}
       <div className="aspect-video relative bg-zinc-800 overflow-hidden">
-        {hovered && tweetId ? (
-          <iframe
-            src={`https://platform.twitter.com/embed/Tweet.html?id=${tweetId}&theme=dark&chrome=noheader&nofooter=true`}
-            className="absolute inset-0 w-full h-full border-0 pointer-events-none"
-            title="Tweet preview"
-            loading="lazy"
-            sandbox="allow-scripts allow-same-origin"
-          />
-        ) : (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-zinc-700">
-            <XIcon size={24} />
+        {isPending ? (
+          // Shimmer while downloading
+          <div className="absolute inset-0 bg-zinc-800 animate-pulse" />
+        ) : isUnavailable ? (
+          // Unavailable — clicking the card opens the tweet URL
+          <div className="absolute inset-0 flex items-center justify-center text-zinc-700">
+            <BrokenLinkIcon />
           </div>
-        )}
+        ) : (
+          <>
+            {/* Thumbnail (static, shown when not hovering) */}
+            {bookmark.thumbnailPath && !hovered && (
+              <img
+                src={bookmark.thumbnailPath}
+                alt=""
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+            )}
 
-        {/* Hover overlay hint */}
-        {!hovered && (
-          <div className="absolute inset-0 group-hover:opacity-0 opacity-100 transition-opacity duration-200 bg-gradient-to-t from-zinc-900 via-transparent to-transparent" />
+            {/* Video preview on hover */}
+            {hovered && bookmark.localPath && (
+              <video
+                src={bookmark.localPath}
+                className="absolute inset-0 w-full h-full object-cover"
+                autoPlay
+                muted
+                loop
+                playsInline
+              />
+            )}
+
+            {/* Fallback icon when no thumbnail yet and not hovering */}
+            {!bookmark.thumbnailPath && !hovered && (
+              <div className="absolute inset-0 flex items-center justify-center text-zinc-700">
+                <PlayIcon />
+              </div>
+            )}
+          </>
         )}
       </div>
 
@@ -81,20 +136,15 @@ export default function BookmarkCard({ bookmark, selected, onClick }) {
           </p>
         )}
 
-        {bookmark.tags.length > 0 && (
+        {bookmark.tags?.length > 0 && (
           <div className="flex flex-wrap gap-1 pt-0.5">
             {bookmark.tags.slice(0, 3).map(tag => (
-              <span
-                key={tag}
-                className={`inline-flex px-1.5 py-0.5 rounded text-[10px] leading-tight ${tagColor(tag)}`}
-              >
+              <span key={tag} className={`inline-flex px-1.5 py-0.5 rounded text-[10px] leading-tight ${tagColor(tag)}`}>
                 {tag}
               </span>
             ))}
             {bookmark.tags.length > 3 && (
-              <span className="text-[10px] text-zinc-700 self-center">
-                +{bookmark.tags.length - 3}
-              </span>
+              <span className="text-[10px] text-zinc-700 self-center">+{bookmark.tags.length - 3}</span>
             )}
           </div>
         )}

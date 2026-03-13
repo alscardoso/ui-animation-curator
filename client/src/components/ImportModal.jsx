@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { importBookmarks } from '../api.js';
+import ImportProgress from './ImportProgress.jsx';
 
 function CloseIcon() {
   return (
@@ -72,23 +73,32 @@ export default function ImportModal({ onClose, onSuccess }) {
 
         <div className="p-5 space-y-4">
           {result ? (
-            /* Success state */
-            <div className="py-6 text-center space-y-3">
-              <p className="text-zinc-100 font-medium">
-                {result.imported} bookmark{result.imported !== 1 ? 's' : ''} imported
-              </p>
-              {result.skipped > 0 && (
-                <p className="text-xs text-zinc-600">
-                  {result.skipped} duplicate{result.skipped !== 1 ? 's' : ''} skipped
+            result.queued > 0 ? (
+              /* Media download in progress */
+              <ImportProgress
+                imported={result.imported}
+                skipped={result.skipped}
+                onDone={onSuccess}
+              />
+            ) : (
+              /* Instant success (no media to queue) */
+              <div className="py-6 text-center space-y-3">
+                <p className="text-zinc-100 font-medium">
+                  {result.imported} bookmark{result.imported !== 1 ? 's' : ''} imported
                 </p>
-              )}
-              <button
-                onClick={onSuccess}
-                className="mt-2 px-5 py-2 bg-zinc-100 text-zinc-900 rounded-md text-sm font-medium hover:bg-white transition-colors"
-              >
-                Done
-              </button>
-            </div>
+                {result.skipped > 0 && (
+                  <p className="text-xs text-zinc-600">
+                    {result.skipped} duplicate{result.skipped !== 1 ? 's' : ''} skipped
+                  </p>
+                )}
+                <button
+                  onClick={onSuccess}
+                  className="mt-2 px-5 py-2 bg-zinc-100 text-zinc-900 rounded-md text-sm font-medium hover:bg-white transition-colors"
+                >
+                  Done
+                </button>
+              </div>
+            )
           ) : (
             <>
               {/* Drop zone */}

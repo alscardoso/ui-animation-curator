@@ -2,3 +2,8 @@ node_modules/
 dist/
 .DS_Store
 *.local
+
+# Downloaded media files — served locally, not committed
+server/media/*
+!server/media/.gitkeep
+server/importStatus.json

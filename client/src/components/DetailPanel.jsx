@@ -135,20 +135,25 @@ export default function DetailPanel({ bookmark, onClose, onUpdate, onDelete }) {
 
         {/* Scrollable body */}
         <div className="flex-1 overflow-y-auto">
-          {/* Tweet embed */}
-          {bookmark.tweet_id && (
-            <div className="border-b border-zinc-800 overflow-hidden bg-black">
-              <iframe
-                key={bookmark.tweet_id}
-                src={`https://platform.twitter.com/embed/Tweet.html?id=${bookmark.tweet_id}&theme=dark`}
-                className="w-full border-0"
-                style={{ height: 420 }}
-                title="Tweet"
-                sandbox="allow-scripts allow-same-origin allow-popups"
-                loading="lazy"
+          {/* Local media player */}
+          {bookmark.localPath ? (
+            <div className="border-b border-zinc-800 bg-black overflow-hidden">
+              <video
+                key={bookmark.localPath}
+                src={bookmark.localPath}
+                controls
+                loop
+                muted
+                playsInline
+                className="w-full"
+                style={{ maxHeight: 420 }}
               />
             </div>
-          )}
+          ) : bookmark.type === 'pending' ? (
+            <div className="border-b border-zinc-800 aspect-video bg-zinc-900 flex items-center justify-center">
+              <p className="text-xs text-zinc-600 animate-pulse">Downloading media…</p>
+            </div>
+          ) : null}
 
           <div className="p-5 space-y-5">
             {/* Tags */}

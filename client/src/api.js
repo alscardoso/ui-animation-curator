@@ -44,3 +44,11 @@ export function importBookmarks(bookmarks) {
     body: JSON.stringify({ bookmarks }),
   });
 }
+
+export function fetchBookmarkById(id) {
+  return request(`/bookmarks/${id}`);
+}
+
+export function fetchImportStatus() {
+  return request('/import/status');
+}
