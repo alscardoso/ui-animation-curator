@@ -6,7 +6,11 @@ const fetch = require('node-fetch');
 const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
 
-const adapter = new FileSync(path.join(__dirname, 'db.json'));
+// On Vercel the filesystem is read-only except /tmp
+const dbPath = process.env.VERCEL
+  ? '/tmp/db.json'
+  : path.join(__dirname, 'db.json');
+const adapter = new FileSync(dbPath);
 const db = low(adapter);
 
 db.defaults({ bookmarks: [] }).write();
@@ -165,7 +169,12 @@ app.get('/api/tags', (req, res) => {
 
 // ── Start ──────────────────────────────────────────────────────────────────
 
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
-  console.log(`UI Animation Curator server running on http://localhost:${PORT}`);
-});
+// In local dev run directly; on Vercel the file is imported as a module
+if (require.main === module) {
+  const PORT = process.env.PORT || 3001;
+  app.listen(PORT, () => {
+    console.log(`UI Animation Curator server running on http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
