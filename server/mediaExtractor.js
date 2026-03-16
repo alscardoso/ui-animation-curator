@@ -7,9 +7,9 @@ const fs = require('fs');
 const execAsync = promisify(exec);
 const MEDIA_DIR = path.join(__dirname, 'media');
 
-if (!fs.existsSync(MEDIA_DIR)) {
-  fs.mkdirSync(MEDIA_DIR, { recursive: true });
-}
+try {
+  if (!fs.existsSync(MEDIA_DIR)) fs.mkdirSync(MEDIA_DIR, { recursive: true });
+} catch {}
 
 // ── Dependency checks ──────────────────────────────────────────────────────
 
