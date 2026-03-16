@@ -59,17 +59,13 @@ export default function BookmarkCard({ bookmark, selected, onClick, onUpdate }) 
 
   const handleClick = () => {
     if (isPending) return;                         // no-op while downloading
-    if (isUnavailable) {
-      window.open(bookmark.url, '_blank', 'noopener,noreferrer');
-      return;
-    }
     onClick?.();
   };
 
   return (
     <article
       className={`group relative flex flex-col bg-zinc-900 rounded-xl overflow-hidden border transition-all duration-150
-        ${isPending ? 'cursor-default' : 'cursor-pointer'}
+        ${isPending ? 'cursor-default opacity-60' : 'cursor-pointer'}
         ${selected
           ? 'border-zinc-400 ring-1 ring-zinc-400/20'
           : 'border-zinc-800 hover:border-zinc-700 hover:shadow-lg hover:shadow-black/40'

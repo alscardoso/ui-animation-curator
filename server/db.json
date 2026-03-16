@@ -1,35 +1,24 @@
 {
   "bookmarks": [
     {
-      "id": "f24a60e1-154f-4cb6-bbc0-67071e17727d",
-      "url": "https://x.com/tcosta/status/2028881217790091401",
-      "tweet_id": "2028881217790091401",
-      "author_name": "T. Costa",
-      "author_handle": "tcosta",
-      "tweet_text": "Gooey pending orders 🍦",
-      "html": "<blockquote class=\"twitter-tweet\"><p lang=\"en\" dir=\"ltr\">Gooey pending orders 🍦 <a href=\"https://t.co/ZA8frkztUc\">pic.twitter.com/ZA8frkztUc</a></p>&mdash; T. Costa (@tcosta) <a href=\"https://twitter.com/tcosta/status/2028881217790091401?ref_src=twsrc%5Etfw\">March 3, 2026</a></blockquote>\n\n",
-      "thumbnail_url": null,
-      "tags": [
-        "playful",
-        "gooey"
-      ],
-      "notes": "",
-      "created_at": "2026-03-10T15:24:40.605Z"
-    },
-    {
-      "id": "00240c48-a215-43ce-b6e6-dad0a16dfe4c",
-      "url": "https://x.com/AdityaSur11/status/2032086711027863789",
-      "tweet_id": "2032086711027863789",
+      "id": "ba7dcd1c-c608-41b1-8bf3-799e3db34e51",
+      "url": "https://x.com/AdityaSur11/status/2033113474356699526",
+      "tweet_id": "2033113474356699526",
       "author_name": "Adi",
       "author_handle": "AdityaSur11",
-      "tweet_text": "Popover Notification Micro-InteractionMade in figma",
-      "html": "<blockquote class=\"twitter-tweet\"><p lang=\"en\" dir=\"ltr\">Popover Notification Micro-Interaction<br>Made in figma <a href=\"https://t.co/XZpg1qtCtX\">pic.twitter.com/XZpg1qtCtX</a></p>&mdash; Adi (@AdityaSur11) <a href=\"https://twitter.com/AdityaSur11/status/2032086711027863789?ref_src=twsrc%5Etfw\">March 12, 2026</a></blockquote>\n\n",
+      "tweet_text": "Another banger interaction made in figma",
+      "html": "<blockquote class=\"twitter-tweet\"><p lang=\"en\" dir=\"ltr\">Another banger interaction made in figma <a href=\"https://t.co/o150onMjMp\">pic.twitter.com/o150onMjMp</a></p>&mdash; Adi (@AdityaSur11) <a href=\"https://twitter.com/AdityaSur11/status/2033113474356699526?ref_src=twsrc%5Etfw\">March 15, 2026</a></blockquote>\n\n",
       "thumbnail_url": null,
+      "type": "video",
+      "localPath": "/media/2033113474356699526.mp4",
+      "thumbnailPath": "/media/2033113474356699526_thumb.jpg",
+      "originalUrl": null,
+      "thumbnailOriginalUrl": null,
       "tags": [
-        "transform"
+        "snappy"
       ],
       "notes": "",
-      "created_at": "2026-03-13T14:54:27.821Z"
+      "created_at": "2026-03-16T20:05:01.634Z"
     }
   ]
 }

@@ -142,18 +142,40 @@ export default function DetailPanel({ bookmark, onClose, onUpdate, onDelete }) {
                 key={bookmark.localPath}
                 src={bookmark.localPath}
                 controls
+                autoPlay
                 loop
                 muted
                 playsInline
                 className="w-full"
                 style={{ maxHeight: 420 }}
               />
+              <a
+                href={bookmark.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-4 py-2.5 text-xs text-zinc-500 hover:text-zinc-200 transition-colors border-t border-zinc-900"
+              >
+                <XIcon size={11} />
+                View original post
+              </a>
             </div>
           ) : bookmark.type === 'pending' ? (
             <div className="border-b border-zinc-800 aspect-video bg-zinc-900 flex items-center justify-center">
               <p className="text-xs text-zinc-600 animate-pulse">Downloading media…</p>
             </div>
-          ) : null}
+          ) : (
+            <div className="border-b border-zinc-800 bg-zinc-900 px-4 py-3">
+              <a
+                href={bookmark.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-200 transition-colors"
+              >
+                <XIcon size={11} />
+                View original post
+              </a>
+            </div>
+          )}
 
           <div className="p-5 space-y-5">
             {/* Tags */}
