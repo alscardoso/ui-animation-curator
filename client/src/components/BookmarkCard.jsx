@@ -80,9 +80,12 @@ export default function BookmarkCard({ bookmark, selected, onClick, onUpdate }) 
           // Shimmer while downloading
           <div className="absolute inset-0 bg-zinc-800 animate-pulse" />
         ) : isUnavailable ? (
-          // Unavailable — clicking the card opens the tweet URL
-          <div className="absolute inset-0 flex items-center justify-center text-zinc-700">
-            <BrokenLinkIcon />
+          // No local media — show author initial placeholder, click opens panel with embed
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 bg-zinc-900">
+            <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-xs font-medium text-zinc-500">
+              {(bookmark.author_name || bookmark.author_handle || '?')[0].toUpperCase()}
+            </div>
+            <span className="text-[10px] text-zinc-700">click to view</span>
           </div>
         ) : (
           <>

@@ -163,19 +163,27 @@ export default function DetailPanel({ bookmark, onClose, onUpdate, onDelete }) {
             <div className="border-b border-zinc-800 aspect-video bg-zinc-900 flex items-center justify-center">
               <p className="text-xs text-zinc-600 animate-pulse">Downloading media…</p>
             </div>
-          ) : (
-            <div className="border-b border-zinc-800 bg-zinc-900 px-4 py-3">
+          ) : bookmark.tweet_id ? (
+            <div className="border-b border-zinc-800 bg-zinc-950 overflow-hidden">
+              <iframe
+                key={bookmark.tweet_id}
+                src={`https://platform.twitter.com/embed/Tweet.html?id=${bookmark.tweet_id}&theme=dark&dnt=true`}
+                className="w-full border-0"
+                style={{ minHeight: 420 }}
+                scrolling="no"
+                allowFullScreen
+              />
               <a
                 href={bookmark.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-200 transition-colors"
+                className="flex items-center gap-1.5 px-4 py-2.5 text-xs text-zinc-500 hover:text-zinc-200 transition-colors border-t border-zinc-900"
               >
                 <XIcon size={11} />
                 View original post
               </a>
             </div>
-          )}
+          ) : null}
 
           <div className="p-5 space-y-5">
             {/* Tags */}
